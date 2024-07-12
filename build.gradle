@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'application'
+}
+
+group 'com.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    archiveBaseName = 'create-jira'
+    archiveVersion = ''
+    archiveClassifier = ''
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:3.0.22'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+
+    testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.mock-server:mockserver-netty:5.11.2'
+    testImplementation 'org.mock-server:mockserver-client-java:5.11.2'
+    testImplementation 'org.mock-server:mockserver-junit-jupiter:5.11.2'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'com.example.GroovyScript'
+}
