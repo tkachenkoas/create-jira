@@ -17,29 +17,58 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '11'
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
-      - name: Build project
+
+      - name: Build artifact
         run: ./gradlew jar
+
+      - name: Get release version from file
+        id: get_release_version
+        run: echo "RELEASE_VERSION=$(cat release-version.txt)" >> $GITHUB_ENV
+
+      - name: Get last release version
+        id: get_last_release
+        run: |
+          LAST_RELEASE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/releases/latest \
+            | jq -r .tag_name)
+          echo "LAST_RELEASE=${LAST_RELEASE}" >> $GITHUB_ENV
+
+      - name: Check if release should be created
+        id: check_release
+        run: |
+          if [ "${RELEASE_VERSION}" == "${LAST_RELEASE}" ]; then
+            echo "Release will be skipped as the version ${RELEASE_VERSION} already exists."
+            echo "RELEASE_SHOULD_BE_CREATED=false" >> $GITHUB_ENV
+          else
+            echo "RELEASE_SHOULD_BE_CREATED=true" >> $GITHUB_ENV
+          fi
 
       - name: Create release
         id: create_release
+        if: env.RELEASE_SHOULD_BE_CREATED == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: Release ${{ env.RELEASE_VERSION }}
           draft: false
           prerelease: false
 
       - name: Upload JAR file
+        if: env.RELEASE_SHOULD_BE_CREATED == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/create-jira.jar
-          asset_name: create-jira.jar
+          asset_path: ./build/libs/your-project.jar
+          asset_name: your-project.jar
           asset_content_type: application/java-archive
