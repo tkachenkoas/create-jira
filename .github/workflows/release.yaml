@@ -69,6 +69,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/your-project.jar
-          asset_name: your-project.jar
+          asset_path: ./build/libs/create-jira.jar
+          asset_name: create-jira.jar
           asset_content_type: application/java-archive
