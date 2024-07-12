@@ -3,6 +3,8 @@ FROM openjdk:11-jre-slim
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
-RUN chmod +x gradlew
+RUN chmod +x ./gradlew
 
-ENTRYPOINT ["./gradlew", "run"]
+RUN ./gradlew jar
+
+CMD ["java", "-jar", "build/libs/your-project.jar"]
