@@ -35,5 +35,5 @@ test {
 }
 
 application {
-    mainClass = 'com.example.GroovyScript'
+    mainClass = 'org.github.tkachenkoas.createjira.CreateJiraAction'
 }
