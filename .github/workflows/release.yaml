@@ -1,9 +1,11 @@
 name: Release
 
 on:
-  push:
+  pull_request:
     branches:
       - master
+    types:
+      - closed
 
 jobs:
   release:
@@ -49,6 +51,15 @@ jobs:
           else
             echo "RELEASE_SHOULD_BE_CREATED=true" >> $GITHUB_ENV
           fi
+      - name: Create and push tag
+        if: env.RELEASE_SHOULD_BE_CREATED == 'true'
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git tag ${{ env.RELEASE_VERSION }}
+          git push origin ${{ env.RELEASE_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create release
         id: create_release

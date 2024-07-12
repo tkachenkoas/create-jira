@@ -1,0 +1,21 @@
+name: Use Create JIRA Action
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  create-jira-ticket:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Use Create JIRA Action
+        uses: tkachenkoas/create-jira@v0.1.0
+        with:
+          jira-url: ${{ secrets.JIRA_URL }}
+          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          command: '/create-jira'
