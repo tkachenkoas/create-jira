@@ -7,4 +7,4 @@ RUN chmod +x ./gradlew
 
 RUN ./gradlew jar
 
-CMD ["java", "-jar", "build/libs/your-project.jar"]
+CMD ["java", "-jar", "build/libs/create-jira.jar"]
