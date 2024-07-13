@@ -28,7 +28,7 @@ class GitHubClient {
         if (response.statusCode() != 201) {
             println "Failed to add GitHub comment: ${response.body()}"
         } else {
-            println "JIRA ticket ${jiraIssueKey} created successfully"
+            println "Notified GitHub about the JIRA ticket ${jiraIssueKey} creation"
         }
     }
 }
