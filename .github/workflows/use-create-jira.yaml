@@ -7,13 +7,16 @@ on:
 jobs:
   create-jira-ticket:
     runs-on: ubuntu-latest
+    if: startsWith(github.event.comment.body, '/create-jira')
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Use Create JIRA Action
-        uses: tkachenkoas/create-jira@0.1.8
+        uses: tkachenkoas/create-jira@0.1.9
         with:
           jira-url: ${{ secrets.JIRA_URL }}
           jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+          env:
+            GITHUB_CONTEXT: ${{ toJson(github) }}

@@ -8,10 +8,9 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 class CreateJiraAction {
 
     static void main(String[] args) {
-        // GITHUB_EVENT_PATH
-        String eventPath = getEnvOrProp('GITHUB_EVENT_PATH')
-        String contextJson = new File(eventPath).text
-        println "Event JSON: ${contextJson}"
+        def contextJson = getEnvOrProp('GITHUB_CONTEXT')
+
+        println("Context JSON: ${contextJson}")
 
         GitHubContext gitHubContext = new ObjectMapper()
                 .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
