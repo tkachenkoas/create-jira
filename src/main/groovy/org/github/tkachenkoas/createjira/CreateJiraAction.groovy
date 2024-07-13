@@ -8,7 +8,11 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 class CreateJiraAction {
 
     static void main(String[] args) {
-        def contextJson = getEnvOrProp('GITHUB_CONTEXT')
+        // GITHUB_EVENT_PATH
+        String eventPath = getEnvOrProp('GITHUB_EVENT_PATH')
+        String contextJson = new File(eventPath).text
+        println "Event JSON: ${contextJson}"
+
         GitHubContext gitHubContext = new ObjectMapper()
                 .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .readValue(contextJson, GitHubContext.class)
@@ -20,20 +24,17 @@ class CreateJiraAction {
                 githubApiUrl: getEnvOrProp('GITHUB_API_URL') ?: "https://api.github.com"
         )
 
-        def command = getEnvOrProp('INPUT_COMMAND') ?: '/create-jira'
-
         println("Context: ${gitHubContext}")
         println("Client params: ${clientParams}")
-        println("Command: ${command}")
 
-        handleCreateJiraCommand(gitHubContext, command, clientParams)
+        handleCreateJiraCommand(gitHubContext, clientParams)
     }
 
     static void handleCreateJiraCommand(
             GitHubContext gitHubContext,
-            String command,
             ClientParams clientParams
     ) {
+        String command = '/create-jira'
         def comment = gitHubContext.payload.comment.body
 
         if (!comment.startsWith(command)) {

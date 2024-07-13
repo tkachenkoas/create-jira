@@ -110,7 +110,7 @@ class CreateJiraActionTest {
                 githubApiUrl: testEnvironment.get('GITHUB_API_URL') ?: "https://api.github.com"
         )
         def command = testEnvironment.get('INPUT_COMMAND') ?: '/create-jira'
-        CreateJiraAction.handleCreateJiraCommand(gitHubContext, command, clientParams)
+        CreateJiraAction.handleCreateJiraCommand(gitHubContext, clientParams)
 
         RequestDefinition jiraRequest = mockServer.retrieveRecordedRequests(HttpRequest.request().withMethod("POST").withPath("/rest/api/3/issue"))[0]
         def expectedJiraBody = '''
@@ -216,7 +216,7 @@ class CreateJiraActionTest {
                 githubApiUrl: testEnvironment.get('GITHUB_API_URL') ?: "https://api.github.com"
         )
         def command = testEnvironment.get('INPUT_COMMAND') ?: '/create-jira'
-        CreateJiraAction.handleCreateJiraCommand(gitHubContext, command, clientParams)
+        CreateJiraAction.handleCreateJiraCommand(gitHubContext, clientParams)
 
         def jiraRequest = mockServer.retrieveRecordedRequests(HttpRequest.request().withMethod("POST").withPath("/rest/api/3/issue"))[0]
         def expectedJiraBody = '''
@@ -319,7 +319,7 @@ class CreateJiraActionTest {
                 githubApiUrl: testEnvironment.get('GITHUB_API_URL') ?: "https://api.github.com"
         )
         def command = testEnvironment.get('INPUT_COMMAND') ?: '/create-jira'
-        CreateJiraAction.handleCreateJiraCommand(gitHubContext, command, clientParams)
+        CreateJiraAction.handleCreateJiraCommand(gitHubContext, clientParams)
 
         def jiraRequest = mockServer.retrieveRecordedRequests(HttpRequest.request().withMethod("POST").withPath("/rest/api/3/issue"))[0]
         def expectedJiraBody = '''
