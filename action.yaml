@@ -7,13 +7,9 @@ inputs:
   jira-api-token:
     description: 'API token for authenticating with JIRA'
     required: true
-  command:
-    description: 'The command to trigger the action, default is /create-jira'
-    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.jira-url }}
     - ${{ inputs.jira-api-token }}
-    - ${{ inputs.command }}
