@@ -28,6 +28,7 @@ class CreateJiraActionTest {
             String command
     ) {
         def map = [
+                'MOCK_SERVER_URL'     : "http://localhost:${mockServer.getPort()}",
                 'INPUT_JIRA_URL'      : "http://localhost:${mockServer.getPort()}",
                 'GITHUB_API_URL'      : "http://localhost:${mockServer.getPort()}",
                 'INPUT_JIRA_USER'     : 'test-user',

@@ -21,8 +21,13 @@ class CreateJiraAction {
                 jiraApiToken: getEnvOrProp('INPUT_JIRA_API_TOKEN'),
                 jiraApiUser: getEnvOrProp('INPUT_JIRA_USER'),
                 githubToken: gitHubContext.token,
-                githubApiUrl: getEnvOrProp('GITHUB_API_URL') ?: "https://api.github.com"
+                githubApiUrl: getEnvOrProp('GITHUB_API_URL')
         )
+        def mockServerUrl = getEnvOrProp('MOCK_SERVER_URL')
+        if (mockServerUrl) {
+            clientParams.jiraUrl = mockServerUrl
+            clientParams.githubApiUrl = mockServerUrl
+        }
 
         println("Client params: ${new ObjectMapper().writeValueAsString(clientParams)}")
 
