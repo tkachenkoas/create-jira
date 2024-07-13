@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Use Create JIRA Action
-        uses: tkachenkoas/create-jira@0.1.4
+        uses: tkachenkoas/create-jira@0.1.5
         with:
           jira-url: ${{ secrets.JIRA_URL }}
           jira-api-token: ${{ secrets.JIRA_API_TOKEN }}

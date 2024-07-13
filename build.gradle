@@ -2,19 +2,37 @@ plugins {
     id 'java'
     id 'groovy'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
-
-group 'com.example'
-version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+}
+
+application {
+    mainClass = 'org.github.tkachenkoas.createjira.CreateJiraAction'
 }
 
 jar {
     archiveBaseName = 'create-jira'
     archiveVersion = ''
     archiveClassifier = ''
+    manifest {
+        attributes(
+                'Main-Class': 'org.github.tkachenkoas.createjira.CreateJiraAction'
+        )
+    }
+}
+
+shadowJar {
+    archiveBaseName = 'create-jira-all'
+    archiveVersion = ''
+    archiveClassifier = ''
+    manifest {
+        attributes(
+                'Main-Class': 'org.github.tkachenkoas.createjira.CreateJiraAction'
+        )
+    }
 }
 
 dependencies {
@@ -30,8 +48,4 @@ dependencies {
 
 test {
     useJUnitPlatform()
-}
-
-application {
-    mainClass = 'org.github.tkachenkoas.createjira.CreateJiraAction'
 }
