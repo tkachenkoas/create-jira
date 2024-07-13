@@ -1,15 +1,15 @@
 name: 'Create JIRA Ticket'
 description: 'Creates a JIRA ticket based on a GitHub issue or pull request comment'
 inputs:
-  jira-url:
+  jira_url:
     description: 'The URL of the JIRA instance'
     required: true
-  jira-api-token:
+  jira_api_token:
     description: 'API token for authenticating with JIRA'
     required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.jira-url }}
-    - ${{ inputs.jira-api-token }}
+    - ${{ inputs.jira_url }}
+    - ${{ inputs.jira_api_token }}

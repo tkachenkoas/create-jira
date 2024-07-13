@@ -36,6 +36,7 @@ class JiraClientTest {
         def clientParams = new ClientParams(
                 jiraUrl: "http://localhost:${mockServer.getPort()}",
                 jiraApiToken: 'test-token',
+                jiraApiUser: 'test-user',
                 githubToken: '',
                 githubApiUrl: ''
         )
@@ -47,10 +48,14 @@ class JiraClientTest {
 
     @Test
     void testCreateJiraTicket() {
+        def basicAuth = "Basic " + Base64.getEncoder().encodeToString(
+                "test-user:test-token".getBytes()
+        )
         mockServer.when(
                 HttpRequest.request()
                         .withMethod("POST")
                         .withPath("/rest/api/3/issue")
+                        .withHeader("Authorization", basicAuth)
         ).respond(
                 HttpResponse.response()
                         .withStatusCode(201)
@@ -60,11 +65,14 @@ class JiraClientTest {
         def clientParams = new ClientParams(
                 jiraUrl: "http://localhost:${mockServer.getPort()}",
                 jiraApiToken: 'test-token',
+                jiraApiUser: 'test-user',
                 githubToken: '',
                 githubApiUrl: ''
         )
 
-        def issueKey = JiraClient.createJiraTicket(clientParams, 'PROJ', 'Test Title', 'Test Description', 'test-user')
+        def issueKey = JiraClient.createJiraTicket(
+                clientParams, 'PROJ', 'Test Title', 'Test Description'
+        )
 
         assertEquals('PROJ-123', issueKey)
     }

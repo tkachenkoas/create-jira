@@ -43,7 +43,8 @@ class GitHubClientTest {
                 githubApiUrl: 'http://localhost:2080'
         )
 
-        GitHubClient.addComment(clientParams, 'test-owner', 'test-repo', 1, 'PROJ-123')
+        def commentUrl = 'https://api.github.com/repos/test-owner/test-repo/issues/1/comments'
+        GitHubClient.addComment(clientParams, commentUrl, 'PROJ-123')
 
         mockServer.verify(
                 HttpRequest.request()

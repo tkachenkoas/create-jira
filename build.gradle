@@ -35,6 +35,26 @@ shadowJar {
     }
 }
 
+task combineSources {
+    doLast {
+        def srcDir = file('src')
+        def targetFile = file('all_source_files_combined.groovy')
+
+        targetFile.text = '' // Create or clear the target file
+
+        srcDir.eachFileRecurse { file ->
+            if (file.isFile()) {
+                def header = "/*\n * File: ${file.canonicalPath}\n */\n"
+                targetFile << header
+                targetFile << file.text
+                targetFile << '\n'
+            }
+        }
+
+        println("All source files have been combined into ${targetFile}")
+    }
+}
+
 dependencies {
     implementation 'org.codehaus.groovy:groovy-all:3.0.22'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'

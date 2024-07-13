@@ -1,10 +1,10 @@
 name: 'Create JIRA Ticket'
 description: 'Создает JIRA-тикет при добавлении специального комментария'
 inputs:
-  jira-url:
+  jira_url:
     description: 'URL JIRA сервера'
     required: true
-  jira-api-token:
+  jira_api_token:
     description: 'JIRA API токен'
     required: true
   github-token:

@@ -19,12 +19,12 @@ class CreateJiraAction {
         def clientParams = new ClientParams(
                 jiraUrl: getEnvOrProp('INPUT_JIRA_URL'),
                 jiraApiToken: getEnvOrProp('INPUT_JIRA_API_TOKEN'),
-                githubToken: getEnvOrProp('INPUT_GITHUB_TOKEN'),
+                jiraApiUser: getEnvOrProp('INPUT_JIRA_USER'),
+                githubToken: gitHubContext.token,
                 githubApiUrl: getEnvOrProp('GITHUB_API_URL') ?: "https://api.github.com"
         )
 
-        println("Context: ${gitHubContext}")
-        println("Client params: ${clientParams}")
+        println("Client params: ${new ObjectMapper().writeValueAsString(clientParams)}")
 
         handleCreateJiraCommand(gitHubContext, clientParams)
     }
@@ -34,22 +34,18 @@ class CreateJiraAction {
             ClientParams clientParams
     ) {
         String command = '/create-jira'
-        def comment = gitHubContext.payload.comment.body
+        def comment = gitHubContext.event.comment.body
 
         if (!comment.startsWith(command)) {
             println 'No command found in the comment, skipping'
             return
         }
 
-        def commentAuthor = gitHubContext.payload.comment.user.login
-        def commentUrl = gitHubContext.payload.comment.html_url
-        def issue = gitHubContext.issue
-        def prUrl = issue.html_url
-        def prTitle = issue.title
-        def branchName = gitHubContext.pull_request?.head?.ref
+        def commentAuthor = gitHubContext.event.comment.user.login
+        def commentUrl = gitHubContext.event.comment.html_url
 
         CommandParams commandParams = CommandParser.parseCommand(comment.substring(command.length()).trim())
-        def project = commandParams.project ?: determineProject(prTitle, branchName, clientParams)
+        def project = commandParams.project
         if (!project) {
             println 'No project specified and could not determine project from context'
             return
@@ -57,21 +53,22 @@ class CreateJiraAction {
         def title = commandParams.title ?: 'GRTKT: Task from Pull Request comments'
         def description = commandParams.description ?: ''
 
+        def issue = gitHubContext.event.issue
+        def prUrl = issue.pull_request.html_url
+
         description += """\n\n**Context:**\n\nThis JIRA ticket was created from a GitHub Pull Request.\n\n- **Pull Request:** [#${issue.number}](${prUrl})\n- **Comment:** [View comment](${commentUrl})\n- **Author:** @${commentAuthor}"""
 
-        def issueKey = JiraClient.createJiraTicket(clientParams, project, title, description, commentAuthor)
+        def issueKey = JiraClient.createJiraTicket(
+                clientParams, project,
+                title, description
+        )
         if (issueKey) {
-            GitHubClient.addComment(clientParams, gitHubContext.repo.owner, gitHubContext.repo.repo, issue.number, issueKey)
+            GitHubClient.addComment(
+                    clientParams,
+                    issue.comments_url,
+                    issueKey
+            )
         }
-    }
-
-    static def determineProject(String prTitle, String branchName, ClientParams clientParams) {
-        def availableProjects = JiraClient.getAvailableProjects(clientParams)
-        def result = availableProjects.find {
-            prTitle?.contains(it) || branchName?.contains(it)
-        }
-        println "Resolved project from branch/pr: ${result}"
-        return result
     }
 
     static def getEnvOrProp(

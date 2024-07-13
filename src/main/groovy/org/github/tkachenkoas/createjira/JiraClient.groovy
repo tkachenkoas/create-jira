@@ -7,8 +7,10 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 class JiraClient {
-    static def getAvailableProjects(ClientParams clientParams) {
-        def jiraAuth = "Basic " + Base64.getEncoder().encodeToString((":${clientParams.jiraApiToken}").getBytes())
+    static def getAvailableProjects(
+            ClientParams clientParams
+    ) {
+        def jiraAuth = getAuthHeader(clientParams)
         def client = HttpClient.newHttpClient()
         def request = HttpRequest.newBuilder()
                 .uri(URI.create("${clientParams.jiraUrl}/rest/api/3/project"))
@@ -27,12 +29,20 @@ class JiraClient {
         }
     }
 
-    static def createJiraTicket(ClientParams clientParams, String project, String title, String description, String assignee) {
-        def jiraAuth = "Basic " + Base64.getEncoder().encodeToString((":${clientParams.jiraApiToken}").getBytes())
+    private static String getAuthHeader(ClientParams clientParams) {
+        return "Basic " + Base64.getEncoder().encodeToString(
+                ("${clientParams.jiraApiUser}:${clientParams.jiraApiToken}").getBytes()
+        )
+    }
+
+    static def createJiraTicket(
+            ClientParams clientParams, String project,
+            String title, String description
+    ) {
         def client = HttpClient.newHttpClient()
         def request = HttpRequest.newBuilder()
                 .uri(URI.create("${clientParams.jiraUrl}/rest/api/3/issue"))
-                .header("Authorization", jiraAuth)
+                .header("Authorization", getAuthHeader(clientParams))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString("""
             {
@@ -40,8 +50,7 @@ class JiraClient {
                     "project": { "key": "${project}" },
                     "summary": "${title}",
                     "description": "${description}",
-                    "issuetype": { "name": "Task" },
-                    "assignee": { "name": "${assignee}" }
+                    "issuetype": { "name": "Task" }                    
                 }
             }
             """))
