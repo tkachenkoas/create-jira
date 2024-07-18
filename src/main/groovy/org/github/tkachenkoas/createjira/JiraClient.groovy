@@ -40,21 +40,40 @@ class JiraClient {
             String title, String description
     ) {
         def client = HttpClient.newHttpClient()
-        def request = HttpRequest.newBuilder()
-                .uri(URI.create("${clientParams.jiraUrl}/rest/api/3/issue"))
-                .header("Authorization", getAuthHeader(clientParams))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("""
+
+        def body = """
             {
                 "fields": {
                     "project": { "key": "${project}" },
                     "summary": "${title}",
-                    "description": "${description}",
+                    "description": {
+                      "version": 1,
+                      "type": "doc",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "${description}"
+                            }                            
+                          ]
+                        }
+                      ]
+                    },
                     "issuetype": { "name": "Task" }                    
                 }
             }
-            """))
+            """
+
+        def request = HttpRequest.newBuilder()
+                .uri(URI.create("${clientParams.jiraUrl}/rest/api/3/issue"))
+                .header("Authorization", getAuthHeader(clientParams))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build()
+
+        println("Sending create jira request: ${body}")
 
         def response = client.send(request, HttpResponse.BodyHandlers.ofString())
         if (response.statusCode() == 201) {

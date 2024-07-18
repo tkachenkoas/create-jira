@@ -6,6 +6,7 @@ import org.mockserver.integration.ClientAndServer
 import org.mockserver.junit.jupiter.MockServerSettings
 import org.mockserver.model.HttpRequest
 import org.mockserver.model.HttpResponse
+import org.mockserver.model.JsonBody
 
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.mockserver.model.JsonBody.json
@@ -56,6 +57,29 @@ class JiraClientTest {
                         .withMethod("POST")
                         .withPath("/rest/api/3/issue")
                         .withHeader("Authorization", basicAuth)
+                        .withBody(new JsonBody("""
+                            {
+                                "fields": {
+                                    "project": { "key": "PROJ" },
+                                    "summary": "Test Title",
+                                    "description": {
+                                      "version": 1,
+                                      "type": "doc",
+                                      "content": [
+                                        {
+                                          "type": "paragraph",
+                                          "content": [
+                                            {
+                                              "type": "text",
+                                              "text": "Test Description"
+                                            }                            
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                }
+                            }           
+                            """))
         ).respond(
                 HttpResponse.response()
                         .withStatusCode(201)
