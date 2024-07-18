@@ -18,5 +18,6 @@ jobs:
         with:
           jira_url: ${{ secrets.JIRA_URL }}
           jira_api_token: ${{ secrets.JIRA_API_TOKEN }}
+          jira_api_user: ${{ secrets.JIRA_API_USER }}
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
