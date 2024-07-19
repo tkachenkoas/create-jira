@@ -1,6 +1,8 @@
 package org.github.tkachenkoas.createjira
 
 
+import org.github.tkachenkoas.createjira.jira.DescriptionJsonUtil
+import org.github.tkachenkoas.createjira.jira.JiraClient
 import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.junit.jupiter.MockServerSettings
@@ -59,31 +61,116 @@ class JiraClientTest {
                         .withHeader("Authorization", basicAuth)
                         .withBody(new JsonBody("""
                             {
-                                "fields": {
-                                    "project": { "key": "PROJ" },
-                                    "summary": "Test Title",
-                                    "description": {
-                                      "version": 1,
-                                      "type": "doc",
-                                      "content": [
+                               "fields":{
+                                  "project":{
+                                     "key":"KAN"
+                                  },
+                                  "summary":"Test Title",
+                                  "description":{
+                                     "version":1,
+                                     "type":"doc",
+                                     "content":[
                                         {
-                                          "type": "paragraph",
-                                          "content": [
-                                            {
-                                              "type": "text",
-                                              "text": "Test Description"
-                                            }                            
-                                          ]
+                                           "type":"paragraph",
+                                           "content":[
+                                              {
+                                                 "type":"text",
+                                                 "text":"Test Description"
+                                              },
+                                              {
+                                                 "type":"hardBreak"
+                                              },
+                                              {
+                                                 "type":"hardBreak"
+                                              },
+                                              {
+                                                 "type":"text",
+                                                 "text":"Context",
+                                                 "marks":[
+                                                    {
+                                                       "type":"strong"
+                                                    }
+                                                 ]
+                                              }
+                                           ]
+                                        },
+                                        {
+                                           "type":"paragraph",
+                                           "content":[
+                                              {
+                                                 "type":"text",
+                                                 "text":"This JIRA ticket was created from a GitHub Pull Request."
+                                              },
+                                              {
+                                                 "type":"hardBreak"
+                                              },
+                                              {
+                                                 "type":"text",
+                                                 "text":"Pull Request:",
+                                                 "marks":[
+                                                    {
+                                                       "type":"strong"
+                                                    }
+                                                 ]
+                                              },
+                                              {
+                                                 "type":"text",
+                                                 "text":" "
+                                              },
+                                              {
+                                                 "type":"text",
+                                                 "text":"https://github.com/tkachenkoas/create-jira/pull/3",
+                                                 "marks":[
+                                                    {
+                                                       "type":"link",
+                                                       "attrs":{
+                                                          "href":"https://github.com/tkachenkoas/create-jira/pull/3"
+                                                       }
+                                                    }
+                                                 ]
+                                              },
+                                              {
+                                                 "type":"hardBreak"
+                                              },
+                                              {
+                                                 "type":"text",
+                                                 "text":"Comment:",
+                                                 "marks":[
+                                                    {
+                                                       "type":"strong"
+                                                    }
+                                                 ]
+                                              },
+                                              {
+                                                 "type":"text",
+                                                 "text":" "
+                                              },
+                                              {
+                                                 "type":"text",
+                                                 "text":"https://github.com/tkachenkoas/create-jira/pull/3#issuecomment-2226908283",
+                                                 "marks":[
+                                                    {
+                                                       "type":"link",
+                                                       "attrs":{
+                                                          "href":"https://github.com/tkachenkoas/create-jira/pull/3#issuecomment-2226908283"
+                                                       }
+                                                    }
+                                                 ]
+                                              }
+                                           ]
                                         }
-                                      ]
-                                    }
-                                }
-                            }           
+                                     ]
+                                  },
+                                  "issuetype":{
+                                     "name":"Task"
+                                  }
+                               }
+                            }   
                             """))
         ).respond(
                 HttpResponse.response()
                         .withStatusCode(201)
-                        .withBody(json([key: "PROJ-123"]))
+                        .withBody(json([key: "KAN-123"]))
         )
 
         def clientParams = new ClientParams(
@@ -94,10 +181,16 @@ class JiraClientTest {
                 githubApiUrl: ''
         )
 
-        def issueKey = JiraClient.createJiraTicket(
-                clientParams, 'PROJ', 'Test Title', 'Test Description'
+        String description = DescriptionJsonUtil.createDescriptionJson(
+                'Test Description',
+                'https://github.com/tkachenkoas/create-jira/pull/3',
+                'https://github.com/tkachenkoas/create-jira/pull/3#issuecomment-2226908283'
         )
 
-        assertEquals('PROJ-123', issueKey)
+        def issueKey = JiraClient.createJiraTicket(
+                clientParams, 'KAN', 'Test Title', description
+        )
+
+        assertEquals('KAN-123', issueKey)
     }
 }

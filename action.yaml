@@ -13,3 +13,4 @@ runs:
   args:
     - ${{ inputs.jira_url }}
     - ${{ inputs.jira_api_token }}
+    - ${{ inputs.jira_api_user }}

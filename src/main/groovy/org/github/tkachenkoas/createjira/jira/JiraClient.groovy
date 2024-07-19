@@ -1,6 +1,8 @@
-package org.github.tkachenkoas.createjira
+package org.github.tkachenkoas.createjira.jira
+
 
 import groovy.json.JsonSlurper
+import org.github.tkachenkoas.createjira.ClientParams
 
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -37,7 +39,7 @@ class JiraClient {
 
     static def createJiraTicket(
             ClientParams clientParams, String project,
-            String title, String description
+            String title, String descriptionJson
     ) {
         def client = HttpClient.newHttpClient()
 
@@ -46,21 +48,7 @@ class JiraClient {
                 "fields": {
                     "project": { "key": "${project}" },
                     "summary": "${title}",
-                    "description": {
-                      "version": 1,
-                      "type": "doc",
-                      "content": [
-                        {
-                          "type": "paragraph",
-                          "content": [
-                            {
-                              "type": "text",
-                              "text": "${description}"
-                            }                            
-                          ]
-                        }
-                      ]
-                    },
+                    "description": ${descriptionJson},
                     "issuetype": { "name": "Task" }                    
                 }
             }

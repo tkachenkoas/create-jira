@@ -2,6 +2,8 @@ package org.github.tkachenkoas.createjira
 
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.github.tkachenkoas.createjira.jira.DescriptionJsonUtil
+import org.github.tkachenkoas.createjira.jira.JiraClient
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 
@@ -46,7 +48,6 @@ class CreateJiraAction {
             return
         }
 
-        def commentAuthor = gitHubContext.event.comment.user.login
         def commentUrl = gitHubContext.event.comment.html_url
 
         CommandParams commandParams = CommandParser.parseCommand(comment.substring(command.length()).trim())
@@ -56,16 +57,18 @@ class CreateJiraAction {
             return
         }
         def title = commandParams.title ?: 'GRTKT: Task from Pull Request comments'
-        def description = commandParams.description ?: ''
-
         def issue = gitHubContext.event.issue
         def prUrl = issue.pull_request.html_url
 
-        description += """\n\n**Context:**\n\nThis JIRA ticket was created from a GitHub Pull Request.\n\n- **Pull Request:** [#${issue.number}](${prUrl})\n- **Comment:** [View comment](${commentUrl})\n- **Author:** @${commentAuthor}"""
+        def descriptionJson = DescriptionJsonUtil.createDescriptionJson(
+                commandParams.description,
+                prUrl,
+                commentUrl
+        )
 
         def issueKey = JiraClient.createJiraTicket(
                 clientParams, project,
-                title, description
+                title, descriptionJson
         )
         if (issueKey) {
             GitHubClient.addComment(

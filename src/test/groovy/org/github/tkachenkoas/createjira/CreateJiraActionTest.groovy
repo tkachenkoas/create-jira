@@ -106,11 +106,6 @@ class CreateJiraActionTest {
 
         def actualDescription = bodyAsJson.fields.description as String
         assert actualDescription.contains("Test Description")
-        assert actualDescription.contains("**Context:**")
-        assert actualDescription.contains("This JIRA ticket was created from a GitHub Pull Request.")
-        assert actualDescription.contains("**Pull Request:** [#3](https://github.com/tkachenkoas/create-jira/pull/3)")
-        assert actualDescription.contains("**Comment:** [View comment](https://github.com/tkachenkoas/create-jira/pull/3#issuecomment-2226908283)")
-        assert actualDescription.contains("**Author:** @tkachenkoas")
 
         assert bodyAsJson.fields.issuetype.name == "Task"
 
