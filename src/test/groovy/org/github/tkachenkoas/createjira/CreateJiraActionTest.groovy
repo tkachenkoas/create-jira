@@ -31,7 +31,7 @@ class CreateJiraActionTest {
                 'MOCK_SERVER_URL'     : "http://localhost:${mockServer.getPort()}",
                 'INPUT_JIRA_URL'      : "http://localhost:${mockServer.getPort()}",
                 'GITHUB_API_URL'      : "http://localhost:${mockServer.getPort()}",
-                'INPUT_JIRA_USER'     : 'test-user',
+                'INPUT_JIRA_API_USER'     : 'test-user',
                 'INPUT_JIRA_API_TOKEN': 'test-token'
         ]
         def context = new File(
