@@ -18,7 +18,7 @@ class DescriptionJsonUtil {
                     "content": [
                         {
                             "type": "text",
-                            "text": "${description ?: ''}",
+                            "text": "${description ?: ''}"
                         },
                         {
                             "type": "hardBreak"

@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Use Create JIRA Action
-        uses: tkachenkoas/create-jira@1.0.0
+        uses: tkachenkoas/create-jira@1.0.1
         with:
           jira_url: https://tkachenkoas.atlassian.net
           jira_api_user: tkachenkoas@gmail.com

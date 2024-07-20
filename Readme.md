@@ -61,7 +61,7 @@ jobs:
 
     steps:
       - name: Use Create JIRA Action
-        uses: tkachenkoas/create-jira@1.0.0
+        uses: tkachenkoas/create-jira@1.0.1
         with:
           jira_url: https://your-jira-domain.atlassian.net
           jira_api_user: your-jira-user-email@example.com
