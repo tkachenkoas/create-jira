@@ -6,7 +6,7 @@ class DescriptionJsonUtil {
     static String createDescriptionJson(
             String description,
             String prLink,
-            String commenLink
+            String commentLink
     ) {
         return """
         {
@@ -18,7 +18,7 @@ class DescriptionJsonUtil {
                     "content": [
                         {
                             "type": "text",
-                            "text": "${description}"
+                            "text": "${description ?: ''}",
                         },
                         {
                             "type": "hardBreak"
@@ -90,12 +90,12 @@ class DescriptionJsonUtil {
                         },
                         {
                             "type": "text",
-                            "text": "${commenLink}",
+                            "text": "${commentLink}",
                             "marks": [
                                 {
                                     "type": "link",
                                     "attrs": {
-                                        "href": "${commenLink}"
+                                        "href": "${commentLink}"
                                     }
                                 }
                             ]

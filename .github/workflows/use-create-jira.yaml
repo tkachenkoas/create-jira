@@ -7,14 +7,12 @@ on:
 jobs:
   create-jira-ticket:
     runs-on: ubuntu-latest
+    # so that not to run the action on every comment
     if: startsWith(github.event.comment.body, '/create-jira')
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Use Create JIRA Action
-        uses: tkachenkoas/create-jira@0.1.13
+        uses: tkachenkoas/create-jira@1.0.0
         with:
           jira_url: https://tkachenkoas.atlassian.net
           jira_api_user: tkachenkoas@gmail.com

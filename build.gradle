@@ -35,14 +35,25 @@ shadowJar {
     }
 }
 
-task combineSources {
+tasks.register('combineSources') {
     doLast {
         def srcDir = file('src')
-        def targetFile = file('all_source_files_combined.groovy')
+        def targetFile = file('all_source_combined.txt')
 
         targetFile.text = '' // Create or clear the target file
 
         srcDir.eachFileRecurse { file ->
+            if (file.isFile()) {
+                def header = "/*\n * File: ${file.canonicalPath}\n */\n"
+                targetFile << header
+                targetFile << file.text
+                targetFile << '\n'
+            }
+        }
+
+        // Combine files from root project directory (non-recursively)
+        def rootDir = file('.')
+        rootDir.eachFile { file ->
             if (file.isFile()) {
                 def header = "/*\n * File: ${file.canonicalPath}\n */\n"
                 targetFile << header

@@ -4,7 +4,7 @@ FROM amazoncorretto:17-alpine
 RUN apk update && apk add curl
 
 # Download release JAR file
-ARG JAR_URL=https://github.com/tkachenkoas/create-jira/releases/download/0.1.13/create-jira.jar
+ARG JAR_URL=https://github.com/tkachenkoas/create-jira/releases/download/1.0.0/create-jira.jar
 RUN curl -L -o /create-jira.jar $JAR_URL
 
 # Run the JAR file
